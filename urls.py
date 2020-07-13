@@ -13,11 +13,18 @@ __copyright__ = 'Copyright 2015 - 2020, Gis3w'
 from django.urls import path
 from django.contrib.auth.decorators import login_required
 from base.urls import G3W_SITETREE_I18N_ALIAS
-from .views import ProjectsListView
+from .views import \
+    ProjectsListView, \
+    ProjectAddView, \
+    ProjectUpdateView, \
+    ProjectDeleteView
 
 # For sitree bar translation
 G3W_SITETREE_I18N_ALIAS.append('eleprofile')
 
 urlpatterns = [
-    path('projects/', login_required(ProjectsListView.as_view()), name='eleprofile-porject-list')
+    path('projects/', login_required(ProjectsListView.as_view()), name='eleprofile-project-list'),
+    path('projects/add/', login_required(ProjectAddView.as_view()), name='eleprofile-project-add'),
+    path('projects/update/<int:pk>/', login_required(ProjectUpdateView.as_view()), name='eleprofile-project-update'),
+    path('projects/delete/<int:pk>/', login_required(ProjectDeleteView.as_view()), name='eleprofile-project-delete'),
 ]
