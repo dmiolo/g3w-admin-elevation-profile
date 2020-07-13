@@ -16,6 +16,6 @@ from .models import EleProProject
 
 
 class ProjectsListView(ListView):
-    """List projecta view."""
+    """List projects view."""
     template_name = 'eleprofile/projects_list.html'
     model = EleProProject
