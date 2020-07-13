@@ -57,10 +57,6 @@ class ProjectUpdateView(G3WRequestViewMixin, UpdateView):
     template_name = 'eleprofile/project_form.html'
     success_url = reverse_lazy('eleprofile-project-list')
 
-    editor_permission = ['change_laws', 'view_laws']
-    editor2_permission = 'view_laws'
-    viewer_permission = 'view_laws'
-
     @method_decorator(
         permission_required('eleprofile.change_eleproproject', (EleProProject, 'pk', 'pk'), return_403=True))
     def dispatch(self, *args, **kwargs):

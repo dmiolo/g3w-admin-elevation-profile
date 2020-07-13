@@ -17,7 +17,7 @@ from django.views.generic import \
     UpdateView, \
     View
 from django.views.generic.detail import SingleObjectMixin
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from guardian.decorators import permission_required
 from core.mixins.views import G3WRequestViewMixin, G3WAjaxDeleteViewMixin
@@ -55,11 +55,10 @@ class DTMListView(ListView):
 
 class DTMAddView(G3WRequestViewMixin, CreateView):
     """
-    Create view for eleprofile project
+    Create view for DTM Layer and pth layers project
     """
     form_class = DTMForm
     template_name = 'eleprofile/dtm_form.html'
-    success_url = reverse_lazy('eleprofile-dtmlayer-list')
 
     @method_decorator(
         permission_required(
@@ -76,3 +75,53 @@ class DTMAddView(G3WRequestViewMixin, CreateView):
         kwargs['initial']['elepro_project'] = self.kwargs['eleproproject_pk']
 
         return kwargs
+
+    def get_success_url(self):
+        """ Return correct url by Eleproproject instance"""
+
+        return reverse('eleprofile-dtmlayer-list', args=[self.kwargs['eleproproject_pk']])
+
+
+class DTMUpdateView(G3WRequestViewMixin, UpdateView):
+    """
+    Update view for DTM Layer and pth layers project
+    """
+    model = EleProDTM
+    form_class = DTMForm
+    template_name = 'eleprofile/dtm_form.html'
+
+    @method_decorator(
+        permission_required(
+            'eleprofile.change_eleproproject',
+            (EleProProject, 'pk', 'eleproproject_pk'),
+            return_403=True))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+
+        # set 'initial' value fo eleproproject
+        kwargs['initial']['elepro_project'] = self.kwargs['eleproproject_pk']
+
+        return kwargs
+
+    def get_success_url(self):
+        """ Return correct url by Eleproproject instance"""
+
+        return reverse('eleprofile-dtmlayer-list', args=[self.kwargs['eleproproject_pk']])
+
+
+class DTMUpdateView(G3WAjaxDeleteViewMixin, SingleObjectMixin, View):
+    """
+    Delete Ajax view for DTM Layer and path layers project
+    """
+    model = EleProDTM
+
+    @method_decorator(
+        permission_required(
+            'eleprofile.change_eleproproject',
+            (EleProProject, 'pk', 'eleproproject_pk'),
+            return_403=True))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)

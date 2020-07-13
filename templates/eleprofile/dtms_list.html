@@ -35,16 +35,14 @@
                 </thead>
                 {% for object in object_list %}
                     {% get_obj_perms user for object as "userObj_perms" %}
-                    <tr id="elepro_project_{{ object.pk }}">
+                    <tr id="dtm_{{ object.pk }}">
                         <td>
-                            {% comment %}
                             <span class="col-xs-6 icon">
-                                <a href="{% url 'eleprofile-project-update' object.id %}" data-toggle="tooltip" data-placement="top" title="{% trans 'Edit' %}" ><i class="ion ion-edit"></i></a>
+                                <a href="{% url 'eleprofile-dtmlayer-update' eleproproject.pk object.pk %}" data-toggle="tooltip" data-placement="top" title="{% trans 'Edit' %}" ><i class="ion ion-edit"></i></a>
                             </span>
                             <span class="col-xs-6 icon">
-                                <a href="#" data-toggle="tooltip" data-placement="top" title="{% trans 'Delete' %}"  data-widget-type="deleteItem" data-delete-url="{% url 'eleprofile-project-delete' object.pk %}" data-item-selector="#elepro_project_{{ object.pk }}"><i class="ion ion-trash-b"></i></a>
+                                <a href="#" data-toggle="tooltip" data-placement="top" title="{% trans 'Delete' %}"  data-widget-type="deleteItem" data-delete-url="{% url 'eleprofile-dtmlayer-update' eleproproject.pk object.pk %}" data-item-selector="#dtm_{{ object.pk }}"><i class="ion ion-trash-b"></i></a>
                             </span>
-                            {% endcomment %}
                         </td>
                         <td>{{ object.dtm_layer }}</td>
                         <td>{{ object.layers }}</td>
