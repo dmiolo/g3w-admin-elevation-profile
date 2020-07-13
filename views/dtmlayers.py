@@ -21,5 +21,58 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from guardian.decorators import permission_required
 from core.mixins.views import G3WRequestViewMixin, G3WAjaxDeleteViewMixin
-from eleprofile.models import EleProProject
-from eleprofile.forms import ProjectForm
+from eleprofile.models import EleProProject, EleProDTM
+from eleprofile.forms import DTMForm
+
+
+class DTMListView(ListView):
+    """List DTM layer and path layers view."""
+
+    template_name = 'eleprofile/dtms_list.html'
+    model = EleProDTM
+
+
+    @method_decorator(
+        permission_required(
+            'eleprofile.change_eleproproject',
+            (EleProProject, 'pk', 'eleproproject_pk'),
+            return_403=True))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        """ Get only EleProDTM elements filtered bu eleproproject pk"""
+
+        return EleProDTM.objects.filter(elepro_project_id=self.kwargs['eleproproject_pk'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # add eleproproject_instance
+        context['eleproproject'] = EleProProject.objects.get(pk=self.kwargs['eleproproject_pk'])
+        return context
+
+
+class DTMAddView(G3WRequestViewMixin, CreateView):
+    """
+    Create view for eleprofile project
+    """
+    form_class = DTMForm
+    template_name = 'eleprofile/dtm_form.html'
+    success_url = reverse_lazy('eleprofile-dtmlayer-list')
+
+    @method_decorator(
+        permission_required(
+            'eleprofile.change_eleproproject',
+            (EleProProject, 'pk', 'eleproproject_pk'),
+            return_403=True))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+
+        # set 'initial' value fo eleproproject
+        kwargs['initial']['elepro_project'] = self.kwargs['eleproproject_pk']
+
+        return kwargs

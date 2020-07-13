@@ -11,14 +11,15 @@ __date__ = '2020-07-09'
 __copyright__ = 'Copyright 2015 - 2020, Gis3w'
 
 from django.contrib import admin
+from guardian.admin import GuardedModelAdmin
 from .models import EleProProject, EleProDTM
 
 
 @admin.register(EleProProject)
-class EleProProjectAdmin(admin.ModelAdmin):
+class EleProProjectAdmin(GuardedModelAdmin):
     pass
 
 
 @admin.register(EleProDTM)
-class EleProDTMAdmin(admin.ModelAdmin):
+class EleProDTMAdmin(GuardedModelAdmin):
     pass
