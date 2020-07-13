@@ -13,7 +13,7 @@ __copyright__ = 'Copyright 2015 - 2020, Gis3w'
 
 from django.core.exceptions import ValidationError
 from qdjango.models import Project, Layer
-from eleprofile.models import EleProProject, EleProDTM, EleProLayer
+from eleprofile.models import EleProProject, EleProDTM
 from .base import EleprofileTestBase
 
 
@@ -46,6 +46,10 @@ class EleprofileModelsTests(EleprofileTestBase):
         dtm.full_clean()
         dtm.save()
 
+        # validate layers added
+        dtm.layers.add(Layer.objects.get(name='paths'))
+        dtm.full_clean()
+
         del(dtm)
 
         dtm = EleProDTM.objects.all()[0]
@@ -59,47 +63,30 @@ class EleprofileModelsTests(EleprofileTestBase):
         with self.assertRaises(ValidationError) as ex:
             dtm.full_clean()
 
-    def test_eleprolayer(self):
-        """Test homonymous model class"""
 
-        elepro_prj = EleProProject(project=self.project.instance)
-        elepro_prj.save()
-
+        del(dtm)
+        # validate path layer
         dtm_layer = Layer.objects.get(name='dtm_3857')
         dtm = EleProDTM(elepro_project=elepro_prj, dtm_layer=dtm_layer)
         dtm.save()
-
-        line_layer = Layer.objects.get(name='paths')
-        layer = EleProLayer(elepro_dtm_layer=dtm, layer=line_layer)
-        layer.full_clean()
-        layer.save()
-
-        del(layer)
-
-        layer = EleProLayer.objects.all()[0]
-        self.assertEqual(layer.elepro_dtm_layer, dtm)
-        self.assertEqual(layer.layer, line_layer)
-
-        # check layer is a vectorlayer, test exception
-        line_layer = Layer.objects.get(name='dtm_3857')
-        layer = EleProLayer(elepro_dtm_layer=dtm, layer=line_layer)
+        dtm.layers.add(dtm_layer)
 
         with self.assertRaisesMessage(
                 ValidationError,
-                "{'layer': [\"Layer must be one of 'postgres', 'spatialite', 'ogr' or 'mssql' type\"]}"
+                "{"+f"'layer': [\"Layer {dtm_layer.name} must be one of 'postgres', 'spatialite', 'ogr' or 'mssql' type\"]"+"}"
         ):
-            layer.full_clean()
+            dtm.full_clean()
 
         # check layer is a vectorlayerand a LineString or a MultiLineString
+        dtm.layers.remove(dtm_layer)
         line_layer = Layer.objects.get(name='areas')
-        layer = EleProLayer(elepro_dtm_layer=dtm, layer=line_layer)
+        dtm.layers.add(line_layer)
 
         with self.assertRaisesMessage(
                 ValidationError,
-                "{'layer': [\"Layer must be one geometry type of 'LineString' or 'MultiLineString\"]}"
+                "{"+f"'layer': [\"Layer {line_layer.name} must be one geometry type of 'LineString' or 'MultiLineString\"]"+"}"
         ):
-            layer.full_clean()
-
+            dtm.full_clean()
 
 
 

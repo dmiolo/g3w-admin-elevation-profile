@@ -23,8 +23,14 @@ from .views import \
 G3W_SITETREE_I18N_ALIAS.append('eleprofile')
 
 urlpatterns = [
+
+    # For projects
+    # ------------
     path('projects/', login_required(ProjectsListView.as_view()), name='eleprofile-project-list'),
     path('projects/add/', login_required(ProjectAddView.as_view()), name='eleprofile-project-add'),
     path('projects/update/<int:pk>/', login_required(ProjectUpdateView.as_view()), name='eleprofile-project-update'),
     path('projects/delete/<int:pk>/', login_required(ProjectDeleteView.as_view()), name='eleprofile-project-delete'),
+
+    # For DTM Layers
+    path('projects/dtmlayers/', login_required(ProjectsListView.as_view()), name='eleprofile-dtmlayer-list'),
 ]

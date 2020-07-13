@@ -29,7 +29,8 @@ class EleProProject(models.Model):
 class EleProDTM(models.Model):
     """ For every elevation profile projects dtm layers to use """
     elepro_project = models.ForeignKey(EleProProject, on_delete=models.CASCADE, related_name="dtm_layers")
-    dtm_layer = models.ForeignKey(Layer, on_delete=models.CASCADE)
+    dtm_layer = models.ForeignKey(Layer, on_delete=models.CASCADE, related_name='dtm_layer')
+    layers = models.ManyToManyField(Layer, related_name='path_layer')
     note = models.TextField('Note', null=True, blank=True)
 
     def clean_fields(self, exclude=None):
@@ -39,30 +40,19 @@ class EleProDTM(models.Model):
         if self.dtm_layer.layer_type not in ('gdal', 'raster'):
             raise ValidationError({'dtm_layer': _("Layer must be a 'raster' or 'gdal' type")})
 
+        # check layer is as vectorlayer
+        if self.pk:
+            for layer in self.layers.all():
+                if layer.layer_type not in ('postgres', 'spatialite', 'ogr', 'mssql'):
+                    raise ValidationError(
+                        {'layer': _(f"Layer {layer.name} must be one of 'postgres', 'spatialite', 'ogr' or 'mssql' type")}
+                    )
+
+                # check geometrytype
+                if layer.geometrytype not in ('LineString', 'MultiLineString'):
+                    raise ValidationError(
+                        {'layer': _(F"Layer {layer.name} must be one geometry type of 'LineString' or 'MultiLineString")}
+                    )
+
     class Meta:
         verbose_name = 'Elevation Profile DTM Layer'
-
-
-class EleProLayer(models.Model):
-    """ For very dtm layer set LineString/MultiLineString layers """
-
-    elepro_dtm_layer = models.ForeignKey(EleProDTM, on_delete=models.CASCADE, related_name="line_layers")
-    layer = models.ForeignKey(Layer, on_delete=models.CASCADE)
-
-    def clean_fields(self, exclude=None):
-        super().clean_fields(exclude=exclude)
-
-        # check layer is as vectorlayer
-        if self.layer.layer_type not in ('postgres', 'spatialite', 'ogr', 'mssql'):
-            raise ValidationError(
-                {'layer': _("Layer must be one of 'postgres', 'spatialite', 'ogr' or 'mssql' type")}
-            )
-
-        # check geometrytype
-        if self.layer.geometrytype not in ('LineString', 'MultiLineString'):
-            raise ValidationError(
-                {'layer': _("Layer must be one geometry type of 'LineString' or 'MultiLineString")}
-            )
-
-    class Meta:
-        verbose_name = 'Elevation Profile Line Layer'

@@ -11,7 +11,7 @@ __date__ = '2020-07-09'
 __copyright__ = 'Copyright 2015 - 2020, Gis3w'
 
 from django.contrib import admin
-from .models import EleProProject, EleProDTM, EleProLayer
+from .models import EleProProject, EleProDTM
 
 
 @admin.register(EleProProject)
@@ -21,9 +21,4 @@ class EleProProjectAdmin(admin.ModelAdmin):
 
 @admin.register(EleProDTM)
 class EleProDTMAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(EleProLayer)
-class EleProLayerAdmin(admin.ModelAdmin):
     pass
