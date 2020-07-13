@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block page_header %}
+    <h1>
+        {% trans 'Elevation Profile Projects' %}
+      </h1>
+{% endblock %}
+
+{% block main_content %}
+<div class="row">
+<div class="col-md-12 col-xs-12">
+    <div class="box">
+        <div class="box-header">
+            {% comment %}
+            {% if perms.auth.add_user %}
+            <a href="{% url 'user-add' %}" class="btn btn-info"><i class="ion ion-plus-circled"></i> {% trans 'User' %}</a>
+            {% endif %}
+            {% endcomment %}
+        </div>
+        <div class="box-body">
+            <table id="users_table" class="table table-hover table-striped" data-widget-type="dataTable">
+                <thead>
+                    <tr>
+                        <th style="width:120px">{% trans 'Actions' %}</th>
+                        <th>{% trans 'Project' %}</th>
+                    </tr>
+                </thead>
+                {% for object in object_list %}
+                    <tr id="elepro_project_{{ object.pk }}">
+                        <th>{{ object.project }}</th>
+                    </tr>
+
+                {% endfor %}
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</div>
+{% endblock %}
