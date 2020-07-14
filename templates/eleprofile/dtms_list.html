@@ -41,12 +41,12 @@
                                 <a href="{% url 'eleprofile-dtmlayer-update' eleproproject.pk object.pk %}" data-toggle="tooltip" data-placement="top" title="{% trans 'Edit' %}" ><i class="ion ion-edit"></i></a>
                             </span>
                             <span class="col-xs-6 icon">
-                                <a href="#" data-toggle="tooltip" data-placement="top" title="{% trans 'Delete' %}"  data-widget-type="deleteItem" data-delete-url="{% url 'eleprofile-dtmlayer-update' eleproproject.pk object.pk %}" data-item-selector="#dtm_{{ object.pk }}"><i class="ion ion-trash-b"></i></a>
+                                <a href="#" data-toggle="tooltip" data-placement="top" title="{% trans 'Delete' %}"  data-widget-type="deleteItem" data-delete-url="{% url 'eleprofile-dtmlayer-delete' eleproproject.pk object.pk %}" data-item-selector="#dtm_{{ object.pk }}"><i class="ion ion-trash-b"></i></a>
                             </span>
                         </td>
                         <td>{{ object.dtm_layer }}</td>
-                        <td>{{ object.layers }}</td>
-                        <td>{{ object.note }}</td>
+                        <td>{{ object.layers.all|join:", " }}</td>
+                        <td>{{ object.note|safe }}</td>
                     </tr>
                 {% endfor %}
                 <tbody></tbody>

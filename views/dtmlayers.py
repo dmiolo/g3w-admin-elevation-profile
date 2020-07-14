@@ -112,7 +112,7 @@ class DTMUpdateView(G3WRequestViewMixin, UpdateView):
         return reverse('eleprofile-dtmlayer-list', args=[self.kwargs['eleproproject_pk']])
 
 
-class DTMUpdateView(G3WAjaxDeleteViewMixin, SingleObjectMixin, View):
+class DTMDeleteView(G3WAjaxDeleteViewMixin, SingleObjectMixin, View):
     """
     Delete Ajax view for DTM Layer and path layers project
     """

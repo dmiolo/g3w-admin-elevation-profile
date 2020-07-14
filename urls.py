@@ -20,7 +20,8 @@ from .views import \
     ProjectDeleteView, \
     DTMListView, \
     DTMAddView, \
-    DTMUpdateView
+    DTMUpdateView, \
+    DTMDeleteView
 
 # For sitree bar translation
 G3W_SITETREE_I18N_ALIAS.append('eleprofile')
@@ -41,6 +42,6 @@ urlpatterns = [
          name='eleprofile-dtmlayer-add'),
     path('projects/dtm/<int:eleproproject_pk>/update/<int:pk>/', login_required(DTMUpdateView.as_view()),
          name='eleprofile-dtmlayer-update'),
-    path('projects/dtm/<int:eleproproject_pk>/delete/<int:pk>/', login_required(DTMUpdateView.as_view()),
+    path('projects/dtm/<int:eleproproject_pk>/delete/<int:pk>/', login_required(DTMDeleteView.as_view()),
          name='eleprofile-dtmlayer-delete'),
 ]
