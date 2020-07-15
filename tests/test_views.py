@@ -176,6 +176,7 @@ class TestViews(EleprofileTestBase):
         data = {
             'elepro_project': epp.pk,
             'dtm_layer': dtm_layer.pk,
+            'dtm_delta': 10,
             'layers': [line_layer.pk],
             'note': "<strong>test</strong> note for dtm layers"
         }
@@ -227,6 +228,7 @@ class TestViews(EleprofileTestBase):
         data = {
             'elepro_project': epp.pk,
             'dtm_layer': dtm_layer.pk,
+            'dtm_delta': 12,
             'layers': [line_layer.pk],
             'note': "test note updated"
         }
@@ -237,6 +239,7 @@ class TestViews(EleprofileTestBase):
         eleprodtm = EleProDTM.objects.all()
         self.assertEqual(len(eleprodtm), 1)
         self.assertEqual(eleprodtm[0].elepro_project, epp)
+        self.assertEqual(eleprodtm[0].dtm_delta, 12)
         self.assertEqual(eleprodtm[0].note, "test note updated")
 
         self.client.logout()
