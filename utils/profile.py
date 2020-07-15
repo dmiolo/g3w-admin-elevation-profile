@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2015 - 2020, Gis3w'
 
 
 from eleprofile.vendor.qprof.gis_utils.profile import interpolate_z
-
+import math
 
 def topoline_from_dem(resampled_trace2d, bOnTheFlyProjection, project_crs, dem, dem_params, delta_dem):
     """ Inherit fron qprof homonimous function
@@ -28,7 +28,15 @@ def topoline_from_dem(resampled_trace2d, bOnTheFlyProjection, project_crs, dem, 
     delta = 0
     for trace_pt2d_dem_crs, trace_pt2d_project_crs in zip(trace2d_in_dem_crs.pts, resampled_trace2d.pts):
         fInterpolatedZVal = interpolate_z(dem, dem_params, trace_pt2d_dem_crs)
-        ln3dtProfile.append((trace_pt2d_project_crs.x, trace_pt2d_project_crs.y, fInterpolatedZVal, delta))
+
+        ln3dtProfile.append(
+            (
+                trace_pt2d_project_crs.x,
+                trace_pt2d_project_crs.y,
+                fInterpolatedZVal if not math.isnan(fInterpolatedZVal) else 0,
+                delta
+            )
+        )
         delta += delta_dem
 
     return ln3dtProfile

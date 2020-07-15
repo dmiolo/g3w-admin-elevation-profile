@@ -12,8 +12,8 @@ __copyright__ = 'Copyright 2015 - 2020, Gis3w'
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import JsonResponse
-from qgis.core import QgsFeatureRequest
-from core.api.base.views import G3WAPIView
+from rest_framework.exceptions import APIException
+from core.api.base.views import G3WAPIView, Response
 from core.utils.qgisapi import get_qgis_layer, get_qgs_project
 from eleprofile.models import EleProDTM
 
@@ -36,14 +36,6 @@ class ProfileCalculateApiView(G3WAPIView):
     Make calculation
     """
 
-    # authentication_classes = (
-    #     CsrfExemptSessionAuthentication,
-    # )
-    #
-    # permission_classes = (
-    #     MakeCDUPermission,
-    # )
-
     def get(self, request, **kwargs):
 
         # try to use qprof api
@@ -55,10 +47,13 @@ class ProfileCalculateApiView(G3WAPIView):
             layer = epp.layers.filter(
                 qgs_layer_id=kwargs['qgs_layer_id'])[0]
             dem = epp.dtm_layer
+        except KeyError:
+            # Case qgs_layer_id not submit
+            raise APIException('No qgs_layer_id parameter into url')
         except ObjectDoesNotExist as e:
-            raise e
+            raise APIException('DTM project object not found into DB')
         except IndexError as e:
-            raise
+            raise APIException('Layer not set into a profile project')
 
         # try to get qgis_layer
         qgis_project = get_qgs_project(dem.project.qgis_file.path)
@@ -69,7 +64,7 @@ class ProfileCalculateApiView(G3WAPIView):
         feature = qgis_layer.getFeature(kwargs['fid'])
         geom = feature.geometry()
         if not geom:
-            raise Exception('Fid not found into layer')
+            raise APIException('Fid not found into layer')
 
         if geom.isMultipart():
             line = multipolyline_to_xytuple_list2(geom.asMultiPolyline())  # typedef QVector<QgsPolyline>
@@ -82,10 +77,11 @@ class ProfileCalculateApiView(G3WAPIView):
 
         multi_path_line = MultiLine([path_line]).to_line().remove_coincident_points()
 
-        # TODO: check for reproject layer by project crs
-
         # line resampled by sample distance
         resampled_line = multi_path_line.densify_2d_line(epp.dtm_delta)
+
+        if qgis_layer.crs() != qgis_project.crs():
+            resampled_line = resampled_line.crs_project(qgis_layer.crs(), qgis_project.crs())
 
         profile = topoline_from_dem(
             resampled_line,
@@ -96,4 +92,8 @@ class ProfileCalculateApiView(G3WAPIView):
             epp.dtm_delta
         )
 
-        return JsonResponse({'profile': profile})
+        self.results.update({
+            'profile': profile
+        })
+
+        return Response(self.results.results)
