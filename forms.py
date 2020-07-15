@@ -95,6 +95,7 @@ class DTMForm(G3WFormMixin, G3WRequestFormMixin, ModelForm):
                                             Div(
                                                 Field('elepro_project', type='hidden'),
                                                 'dtm_layer',
+                                                'dtm_delta',
                                                 'layers',
                                                 Field('note', css_class='wys5'),
                                                 css_class='box-body',

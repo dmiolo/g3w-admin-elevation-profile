@@ -17,6 +17,6 @@ from .api.views import ProfileCalculateApiView
 urlpatterns = [
     path('api/calculate/<int:eleprodtm_pk>/', ProfileCalculateApiView.as_view(),
          name='eleprofile-api-calculate-no-fid'),
-    path('api/calculate/<int:eleprodtm_pk>/<int:fid>/', ProfileCalculateApiView.as_view(),
+    path('api/calculate/<int:eleprodtm_pk>/<str:qgs_layer_id>/<int:fid>/', ProfileCalculateApiView.as_view(),
          name='eleprofile-api-calculate-fid'),
 ]

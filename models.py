@@ -29,8 +29,11 @@ class EleProProject(models.Model):
 class EleProDTM(models.Model):
     """ For every elevation profile projects dtm layers to use """
     elepro_project = models.ForeignKey(EleProProject, on_delete=models.CASCADE, related_name="dtm_layers")
-    dtm_layer = models.ForeignKey(Layer, on_delete=models.CASCADE, related_name='dtm_layer')
-    layers = models.ManyToManyField(Layer, related_name='path_layer')
+    dtm_layer = models.ForeignKey(Layer, on_delete=models.CASCADE, related_name='dtm_layer',
+                                  help_text=_('Select DTM project layer to use for sampling'))
+    dtm_delta = models.IntegerField(_('Sampling DTM step'), default=10,
+                                    help_text=_('Sampling step in map units, default 10'))
+    layers = models.ManyToManyField(Layer, related_name='path_layer', help_text=_('Select one or more path layers'))
     note = models.TextField('Note', null=True, blank=True)
 
     def clean_fields(self, exclude=None):
