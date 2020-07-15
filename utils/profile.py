@@ -14,10 +14,10 @@ __copyright__ = 'Copyright 2015 - 2020, Gis3w'
 from eleprofile.vendor.qprof.gis_utils.profile import interpolate_z
 import math
 
+
 def topoline_from_dem(resampled_trace2d, bOnTheFlyProjection, project_crs, dem, dem_params, delta_dem):
     """ Inherit fron qprof homonimous function
     """
-
 
     if bOnTheFlyProjection and dem.crs() != project_crs:
         trace2d_in_dem_crs = resampled_trace2d.crs_project(project_crs, dem.crs())
