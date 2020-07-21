@@ -1,13 +1,13 @@
 # G3W-ADMIN-ELEVATION-PROFILE
 
-Gived a DTM raster layer calculate for every feature of a LineString layer the elevation profile and show on client. 
+Gived a DTM raster layer calculate for every feature of a LineString layer the elevation profile and show on client.
+
+![Admin GUI](docs/images/admin.png)
+
+![Client GUI](docs/images/client.png) 
 
 ###Requirements
 G3W-SUITE > v3.0
-
-###Pip requirements
-
-* tilestache
 
 Installation
 ------------
