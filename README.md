@@ -15,7 +15,7 @@ Installation
 Add like git submodule from main g3w-admin directory
 
 ```bash
-gti clone https://github.com/g3w-suite/g3w-admin-elevation-profile.git
+git clone https://github.com/g3w-suite/g3w-admin-elevation-profile.git
 mv g3w-admin-elevation-profile <path_to_g3w_location>/g3w-admin/eleprofile
 ```
 
